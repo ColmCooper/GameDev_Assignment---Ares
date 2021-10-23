@@ -1,0 +1,178 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+public class ControlCharacter_PartB : MonoBehaviour
+{
+    public Rigidbody2D enemy;
+    public bool right = false;
+    public bool left = false;
+    public bool up = false;
+    public bool down = false;
+    public float speed = 2.0f;
+
+    public Animator animator;
+    public Camera cam;
+    // public Object player;
+    public float S_height;
+    public float S_width;
+
+    // Use this for initialization
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+        cam = Camera.main;
+        Debug.Log("Width, height = " + Screen.width + ", " + Screen.height);
+        S_height = 2f * cam.orthographicSize;
+        S_width = S_height * cam.aspect;
+        Debug.Log("The widht " + S_width + " and height " + S_height + "");
+        InvokeRepeating("enemySpawn", 3, 3);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Rigidbody2D laserInstance;
+        if (Input.GetButtonDown("Fire1"))
+        {
+            orbInstance = Instantiate(laser, transform.position, Quaternion.Euler(new Vector3(-1, 0, 0)));
+            if (right == true)
+                laserInstance.velocity = new Vector2(laserSpeed, 0);
+            if (left == true)
+                laserInstance.velocity = new Vector2(laserSpeed, 0);
+            if (up == true)
+                laserInstance.velocity = new Vector2(laserSpeed, 0);
+            if (down == true)
+                laserInstance.velocity = new Vector2(laserSpeed, 0);
+        }
+    }
+    private void enemySpawn()
+    {
+        Rigidbody2D enemyInstance;
+        Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(10.0f, 10.0f));
+        enemyInstance = Instantiate(enemy, new Vector3(Random.Range(2.0f,8.0f), Random.Range(-4.0f, 4.0f) ,0), Quaternion.Euler(new Vector3(0f, 0f,0f)));
+
+
+
+    }
+    private void FixedUpdate()
+    {
+        MoveCharacter();
+    }
+    void MoveCharacter()
+    {
+        float xPos = animator.transform.position.x;
+        float yPos = animator.transform.position.y;
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            animator.SetBool("left", false);
+            animator.SetBool("up", false);
+            animator.SetBool("down", false);
+            animator.SetBool("right", true);
+            down = false;
+            left = false;
+            right = true;
+            up = false;
+            transform.Translate(Vector3.right * Time.deltaTime * speed);
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            animator.SetBool("left", false);
+            animator.SetBool("up", false);
+            animator.SetBool("right", false);
+            animator.SetBool("down", true);
+            down = true;
+            left = false;
+            right = false;
+            up = false;
+            transform.Translate(Vector3.down * Time.deltaTime * speed);
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            animator.SetBool("down", false);
+            animator.SetBool("right", false);
+            animator.SetBool("up", false);
+            animator.SetBool("left", true);
+            down = false;
+            left = true;
+            right = false;
+            up = false;
+            transform.Translate(Vector3.left * Time.deltaTime * speed);
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            animator.SetBool("right", false);
+            animator.SetBool("down", false);
+            animator.SetBool("left", false);
+            animator.SetBool("up", true);
+            down = false;
+            left = false;
+            right = false;
+            up = true;
+            transform.Translate(Vector3.up * Time.deltaTime * speed);
+        }
+        if (right == true)
+            transform.Translate(Vector3.right * speed * Time.deltaTime);
+        if (left == true)
+            transform.Translate(Vector3.left * speed * Time.deltaTime);
+        if (up == true)
+            transform.Translate(Vector3.up * speed * Time.deltaTime);
+        if (down == true)
+            transform.Translate(Vector3.down * speed * Time.deltaTime);
+
+        if (xPos > (11.25))
+        {
+            animator.SetBool("down", false);
+            animator.SetBool("right", false);
+            animator.SetBool("up", false);
+            animator.SetBool("left", true);
+            down = false;
+            left = true;
+            right = false;
+            up = false;
+            transform.Translate(Vector3.left * Time.deltaTime * speed);
+
+        }
+        if (xPos < -(11.25))
+        {
+            animator.SetBool("left", false);
+            animator.SetBool("up", false);
+            animator.SetBool("down", false);
+            animator.SetBool("right", true);
+            down = false;
+            left = false;
+            right = true;
+            up = false;
+            transform.Translate(Vector3.right * Time.deltaTime * speed);
+
+        }
+        if (yPos <-(4.79))
+        {
+            animator.SetBool("down", false);
+            animator.SetBool("right", false);
+            animator.SetBool("up", false);
+            animator.SetBool("left", true);
+            down = false;
+            left = false;
+            right = false;
+            up = true;
+            transform.Translate(Vector3.up * Time.deltaTime * speed);
+
+        }
+        if (yPos > (4.79))
+        {
+            animator.SetBool("left", false);
+            animator.SetBool("up", false);
+            animator.SetBool("down", false);
+            animator.SetBool("right", true);
+            down = true;
+            left = false;
+            right = false;
+            up = false;
+            transform.Translate(Vector3.down * Time.deltaTime * speed);
+
+        }
+        print(xPos + ", " + yPos);
+    }
+}
