@@ -1,0 +1,141 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Movement : MonoBehaviour
+{
+
+    public float speed = 10.0f;
+    public float xPos;
+
+
+    public int lives = 3;
+    public int score = 0;
+
+    public GameObject[] gameObjects;
+
+    public GUIStyle myStyle;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        MoveCharacter();
+        xPos = transform.position.x;
+        //print(xPos);
+    }
+
+    void MoveCharacter()
+    {
+        if (Input.GetKey(KeyCode.A))
+        {
+            if (xPos < -5.9)
+            {
+                speed = 0.0f;
+                transform.Translate(Vector3.left * Time.deltaTime * speed);
+            }
+            else
+            {
+                speed = 10.0f;
+                transform.Translate(Vector3.left * Time.deltaTime * speed);
+            }
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            if (xPos > 5.9)
+            {
+                speed = 0.0f;
+                transform.Translate(Vector3.right * Time.deltaTime * speed);
+            }
+            else
+            {
+                speed = 10.0f;
+                transform.Translate(Vector3.right * Time.deltaTime * speed);
+            }
+        }
+    }
+
+    void RemovalBox()
+    {
+        gameObjects = GameObject.FindGameObjectsWithTag("Box");
+        for (var i = 0; i < gameObjects.Length; i++)
+        {
+            Destroy(gameObjects[i]);
+        }
+    }
+
+    void RemovalCrystal50()
+    {
+        gameObjects = GameObject.FindGameObjectsWithTag("Crystal50");
+        for (var i = 0; i < gameObjects.Length; i++)
+        {
+            Destroy(gameObjects[i]);
+        }
+        void RemovalCrystal25()
+        {
+            gameObjects = GameObject.FindGameObjectsWithTag("Crystal25");
+            for (var i = 0; i < gameObjects.Length; i++)
+            {
+                Destroy(gameObjects[i]);
+            }
+            void RemovalSpikes()
+            {
+                gameObjects = GameObject.FindGameObjectsWithTag("Crystal50");
+                for (var i = 0; i < gameObjects.Length; i++)
+                {
+                    Destroy(gameObjects[i]);
+                }
+            }
+
+            void OnCollisionEnter2D(Collision2D other)
+            {
+                if (other.gameObject.name == "Box(Clone)")
+                {
+                    lives -= 1;
+                    Destroy(other.gameObject);
+                    if (lives == 0)
+                    {
+                        print("GAMEOVER");
+                        RemovalSpikes();
+                        RemovalBox();
+                        Time.timeScale = 0;
+                    }
+                    if (other.gameObject.name == "Spikes(Clone)")
+                    {
+                        lives = 0;
+                        Destroy(other.gameObject);
+                        if (lives == 0)
+                        {
+                            print("GAMEOVER");
+                            RemovalSpikes();
+                            RemovalBox();
+                            Time.timeScale = 0;
+                        }
+                    }
+                    if (other.gameObject.name == "Crystal50(Clone)")
+                    {
+                        score += 50;
+                        Destroy(other.gameObject);
+                    }
+                    if (other.gameObject.name == "Crystal25(Clone)")
+                    {
+                        score += 25;
+                        Destroy(other.gameObject);
+                    }
+                }
+
+                void OnGUI()
+                {
+                    GUI.Box(new Rect(10, 10, 100, 30), "Time: " + Time.time, myStyle);
+                    GUI.Box(new Rect(10, 40, 100, 30), "Score: " + score);
+                    GUI.Box(new Rect(10, 70, 100, 30), "lives: " + lives);
+                }
+            }
+        }
+    }
+}
